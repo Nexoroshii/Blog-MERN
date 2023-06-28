@@ -1,5 +1,6 @@
 import User from "../models/User.js";
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 //Register
 
 export const register = async (req, res) => {
@@ -26,13 +27,34 @@ export const register = async (req, res) => {
       message: "Пользователь успешно зарегистрирован",
     });
   } catch (e) {
-    res.json({ message: "Ошибка при создании пользователя." });
+    res.json({ message: "Ошибка при создании пользователя" });
   }
 };
 //login
 export const login = async (req, res) => {
   try {
-  } catch (e) {}
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.json({
+        message: "Пользователь не найден",
+      });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+      return res.json({
+        message: "Неверный пароль",
+      });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+  } catch (e) {
+    res.json({ message: "Ошибка при авторизации" });
+  }
 };
 //get me
 export const getMe = async (req, res) => {
