@@ -65,5 +65,19 @@ export const login = async (req, res) => {
 //get me
 export const getMe = async (req, res) => {
   try {
-  } catch (e) {}
+    const user = await User.findById(req.userId);
+    if (!user)
+      return res.json({ message: "Такого пользователя не существует" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
+
+    return res.json({
+      token,
+      user,
+    });
+  } catch (e) {
+    res.json({ message: "нет доступа" });
+  }
 };
