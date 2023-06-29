@@ -3,7 +3,7 @@ import React from "react";
 export const Navbar = () => {
   return (
     <div className="flex py-4 justify-between items-center">
-      <span className="flex justify-center w-6 h-6 bg-gray-600 text-sx text-white rounded-sm">
+      <span className="flex justify-center w-6 h-6 bg-gray-600 text-xs text-white rounded-sm">
         E
       </span>
       <ul className="flex gap-8">
