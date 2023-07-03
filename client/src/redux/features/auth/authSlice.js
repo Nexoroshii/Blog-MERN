@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "../../../utils/axios";
 
 const initialState = {
   user: null,
@@ -7,10 +8,29 @@ const initialState = {
   status: null,
 };
 
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async ({ username, password }) => {
+    try {
+      const { data } = await axios.post("/auth/register", {
+        username,
+        password,
+      });
+
+      if (data.token) {
+        window.localStorage.setItem("token", data.token);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
+  extraReducers: { [registerUser.pending]: () => {} },
 });
 
 export default authSlice.reducer;
