@@ -1,83 +1,89 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 //Register
 
 export const register = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const isUsed = await User.findOne({ username });
-    if (isUsed) {
-      return res.json({
-        message: "Данный username уже занят",
-      });
+    try {
+        const { username, password } = req.body;
+        const isUsed = await User.findOne({ username });
+        if (isUsed) {
+            return res.json({
+                message: 'Данный username уже занят',
+            });
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+
+        const newUser = new User({
+            username,
+            password: hash,
+        });
+
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+            expiresIn: '30d',
+        });
+
+        await newUser.save();
+        return res.json({
+            newUser,
+            token,
+            message: 'Пользователь успешно зарегистрирован',
+        });
+    } catch (e) {
+        console.log(e);
+        res.json({ message: 'Ошибка при создании пользователя' });
     }
-
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-
-    const newUser = new User({
-      username,
-      password: hash,
-    });
-
-    await newUser.save();
-    return res.json({
-      newUser,
-      message: "Пользователь успешно зарегистрирован",
-    });
-  } catch (e) {
-    res.json({ message: "Ошибка при создании пользователя" });
-  }
 };
 //login
 export const login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user) {
-      return res.json({
-        message: "Пользователь не найден",
-      });
+    try {
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.json({
+                message: 'Пользователь не найден',
+            });
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return res.json({
+                message: 'Неверный пароль',
+            });
+        }
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '30d',
+        });
+
+        return res.json({
+            token,
+            user,
+            message: 'Вход успешно выполнен',
+        });
+    } catch (e) {
+        res.json({ message: 'Ошибка при авторизации' });
     }
-
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordCorrect) {
-      return res.json({
-        message: "Неверный пароль",
-      });
-    }
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
-
-    return res.json({
-      token,
-      user,
-      message: "Вход успешно выполнен",
-    });
-  } catch (e) {
-    res.json({ message: "Ошибка при авторизации" });
-  }
 };
 //get me
 export const getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId);
-    if (!user)
-      return res.json({ message: "Такого пользователя не существует" });
+    try {
+        const user = await User.findById(req.userId);
+        if (!user)
+            return res.json({ message: 'Такого пользователя не существует' });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "30d",
-    });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '30d',
+        });
 
-    return res.json({
-      token,
-      user,
-    });
-  } catch (e) {
-    res.json({ message: "нет доступа" });
-  }
+        return res.json({
+            token,
+            user,
+        });
+    } catch (e) {
+        res.json({ message: 'нет доступа' });
+    }
 };
