@@ -1,16 +1,16 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 export const checkAuth = (req, res, next) => {
-  const token = (req.headers.authorization || "").replace(/Bearer\s?/, "");
-  if (token) {
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = decoded.id;
-      mext();
-    } catch (error) {
-      return res.json({ message: "Нет доступа" });
+    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+    if (token) {
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.userId = decoded.id;
+            next();
+        } catch (error) {
+            return res.json({ message: 'Нет доступа1' });
+        }
+    } else {
+        return res.json({ message: 'Нет доступа2' });
     }
-  } else {
-    return res.json({ message: "Нет доступа" });
-  }
 };

@@ -10,7 +10,11 @@ export const RegisterPage = () => {
     const { status } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
-    useEffect(() => {}, [status]);
+    useEffect(() => {
+        if (status) {
+            toast(status);
+        }
+    }, [status]);
 
     const handleSubmit = () => {
         try {
