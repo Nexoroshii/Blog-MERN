@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import authRoute from "./routes/auth.js";
 import postRoute from "./routes/posts.js";
+import fileUpload from "express-fileupload";
 
 const app = express();
 dotenv.config();
@@ -16,7 +17,9 @@ const DB_NAME = process.env.DB_NAME;
 
 //Middleware
 app.use(cors());
+app.use(fileUpload());
 app.use(express.json());
+app.use(express.static("uploads"));
 
 //Routes
 app.use("/api/auth", authRoute);
