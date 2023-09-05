@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { getAll, getById } from '../controllers/postsController.js';
 import { checkAuth } from '../utils/checkAuth.js';
 import { createPost } from '../controllers/postsController.js';
-//import {getById} from
 
 const router = new Router();
 
