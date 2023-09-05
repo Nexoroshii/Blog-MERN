@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { getAll } from '../controllers/postsController.js';
+import { getAll, getById } from '../controllers/postsController.js';
 import { checkAuth } from '../utils/checkAuth.js';
 import { createPost } from '../controllers/postsController.js';
+//import {getById} from
 
 const router = new Router();
 
@@ -11,5 +12,8 @@ router.post('/', checkAuth, createPost);
 
 //get all posts
 router.get('/', getAll);
+
+//get post by id
+router.get('/:id', getById);
 
 export default router;

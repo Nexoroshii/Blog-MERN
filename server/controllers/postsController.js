@@ -62,3 +62,16 @@ export const getAll = async (req, res) => {
         res.json({ message: 'Something went wrong' });
     }
 };
+
+//get by id
+
+export const getById = async (req, res) => {
+    try {
+        const post = await Post.findOneAndUpdate(req.params.id, {
+            $inc: { views: 1 },
+        });
+        return res.json(post);
+    } catch (error) {
+        res.json({ message: 'Something went wrong' });
+    }
+};
