@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAll, getById } from '../controllers/postsController.js';
+import { getAll, getById, getMyPosts } from '../controllers/postsController.js';
 import { checkAuth } from '../utils/checkAuth.js';
 import { createPost } from '../controllers/postsController.js';
 
@@ -14,5 +14,8 @@ router.get('/', getAll);
 
 //get post by id
 router.get('/:id', getById);
+
+//get my posts
+router.get('/user/me', checkAuth, getMyPosts);
 
 export default router;
