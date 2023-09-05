@@ -7,29 +7,34 @@ import { getAllPosts } from '../redux/features/post/postSlice';
 export const MainPage = () => {
     const dispatch = useDispatch();
     const { posts, popularPosts } = useSelector((state) => state.post);
+    //console.log(posts.length);
     useEffect(() => {
         dispatch(getAllPosts());
     }, [dispatch]);
 
-    // if (!posts.length) {
-    //     return (
-    //         <div className="text-xl text-center text-white py-10">
-    //             Постов не существует
-    //         </div>
-    //     );
-    // }
+    if (!posts.length) {
+        return (
+            <div className="text-xl text-center text-white py-10">
+                Постов не существует
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-[900px] mx-auto py-10">
             <div className="flex justify-between gap-8">
                 <div className="flex flex-col gap-10 basis-4/5">
-                    <PostItem />
+                    {posts?.map((post, idx) => (
+                        <PostItem post={post} key={idx} />
+                    ))}
                 </div>
                 <div className="basis-1/5">
                     <div className="text-xs uppercase text-white">
                         Популярное
                     </div>
-                    <PopularPosts />
+                    {popularPosts?.map((post, idx) => (
+                        <PopularPosts key={idx} post={post} />
+                    ))}
                 </div>
             </div>
         </div>

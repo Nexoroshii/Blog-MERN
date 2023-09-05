@@ -51,8 +51,8 @@ export const createPost = async (req, res) => {
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await Posts.find().sort('-createdAt');
-        const popularPosts = await Posts.find().limit(5).sort('-views');
+        const posts = await Post.find().sort('-createdAt');
+        const popularPosts = await Post.find().limit(5).sort('-views');
         if (!posts) {
             return res.json({ message: 'No posts found' });
         }
