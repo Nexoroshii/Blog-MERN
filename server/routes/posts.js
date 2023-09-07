@@ -6,6 +6,7 @@ import {
     removePost,
     createPost,
     updatePost,
+    getPostComments,
 } from '../controllers/postsController.js';
 import { checkAuth } from '../utils/checkAuth.js';
 
@@ -29,5 +30,8 @@ router.delete('/:id', checkAuth, removePost);
 
 //update post
 router.put('/:id', checkAuth, updatePost);
+
+//get post comments
+router.get('/comments/:id', getPostComments);
 
 export default router;
